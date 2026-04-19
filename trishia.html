@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Guest List</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; padding: 50px; background-color: #f9f9f9; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #5a5a5a; }
+        input { padding: 12px; width: 80%; border-radius: 25px; border: 1px solid #ddd; outline: none; font-size: 16px; }
+        input:focus { border-color: #b5838d; }
+        #result { margin-top: 30px; font-size: 1.1em; color: #333; line-height: 1.6; }
+        .highlight { color: #b5838d; font-weight: bold; font-size: 1.4em; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Guest Finder</h1>
+    <p>Please enter your name to find your table.</p>
+    <input type="text" id="guestSearch" placeholder="Enter first or last name..." onkeyup="searchGuest()">
+    
+    <div id="result"></div>
+</div>
+
+<script>
+    // Your actual guest data assigned to a constant
+    const guests = [
+        { "Guest #": "1", "Table #": "VIP 1", "Surname ": "Batac", "Given Name ": "Pablito" },
+  { "Guest #": "2", "Table #": "VIP 1", "Surname ": "Batac", "Given Name ": "Chantelle" },
+  { "Guest #": "3", "Table #": "VIP 1", "Surname ": "Maniulit", "Given Name ": "Emmanuel" },
+  { "Guest #": "4", "Table #": "VIP 1", "Surname ": "Tan Maniulit", "Given Name ": "Cherrie" },
+  { "Guest #": "5", "Table #": "VIP 1", "Surname ": "Batac", "Given Name ": "Milagros" },
+  { "Guest #": "6", "Table #": "VIP 1", "Surname ": "Lim", "Given Name ": "Emmanuel" },
+  { "Guest #": "7", "Table #": "VIP 1", "Surname ": "Lim", "Given Name ": "Jacklyn" },
+  { "Guest #": "8", "Table #": "VIP 1", "Surname ": "Perez", "Given Name ": "Henry" },
+  { "Guest #": "9", "Table #": "VIP 1", "Surname ": "Perez", "Given Name ": "Mayo" },
+  { "Guest #": "10", "Table #": "VIP 1", "Surname ": "De Leon", "Given Name ": "David" },
+  { "Guest #": "11", "Table #": "VIP 1", "Surname ": "De Leon", "Given Name ": "Anne" },
+  { "Guest #": "12", "Table #": "VIP 1", "Surname ": "Wijangco", "Given Name ": "Dennis" },
+  { "Guest #": "13", "Table #": "VIP 1", "Surname ": "Henson", "Given Name ": "Bob" },
+  { "Guest #": "14", "Table #": "VIP 1", "Surname ": "Tan", "Given Name ": "Chito" },
+  { "Guest #": "15", "Table #": "VIP 2", "Surname ": "Tan", "Given Name ": "Mildred" },
+  { "Guest #": "16", "Table #": "VIP 2", "Surname ": "Young", "Given Name ": "Raquel" },
+  { "Guest #": "17", "Table #": "VIP 2", "Surname ": "Cuaso", "Given Name ": "Joy" },
+  { "Guest #": "18", "Table #": "VIP 2", "Surname ": "Cuaso", "Given Name ": "Toddy" },
+  { "Guest #": "19", "Table #": "VIP 2", "Surname ": "Lacson", "Given Name ": "Raquel" },
+  { "Guest #": "21", "Table #": "VIP 2", "Surname ": "Cunanan", "Given Name ": "Vina" },
+  { "Guest #": "22", "Table #": "VIP 2", "Surname ": "Aniceto", "Given Name ": "Erwin" },
+  { "Guest #": "23", "Table #": "VIP 2", "Surname ": "Alviz", "Given Name ": "Percy" },
+  { "Guest #": "24", "Table #": "VIP 2", "Surname ": "Alviz", "Given Name ": "Dean" },
+  { "Guest #": "25", "Table #": "VIP 2", "Surname ": "Manikad", "Given Name ": "Tito" },
+  { "Guest #": "26", "Table #": "VIP 2", "Surname ": "Manikad", "Given Name ": "Liberty" },
+  { "Guest #": "29", "Table #": "3", "Surname ": "Aniceto", "Given Name ": "Kirsten" },
+  { "Guest #": "30", "Table #": "3", "Surname ": "Aniceto", "Given Name ": "Kevin" },
+  { "Guest #": "31", "Table #": "3", "Surname ": "Batac", "Given Name ": "Christelle Paula" },
+  { "Guest #": "32", "Table #": "3", "Surname ": "Limjoco", "Given Name ": "Robin" },
+  { "Guest #": "33", "Table #": "3", "Surname ": "Batac", "Given Name ": "Krista Erika" },
+  { "Guest #": "34", "Table #": "3", "Surname ": "Belando", "Given Name ": "Daniel" },
+  { "Guest #": "35", "Table #": "3", "Surname ": "Aniceto", "Given Name ": "Kelsey" },
+  { "Guest #": "36", "Table #": "3", "Surname ": "Aniceto", "Given Name ": "Sofia" },
+  { "Guest #": "37", "Table #": "3", "Surname ": "Alviz", "Given Name ": "Amaia" },
+  { "Guest #": "38", "Table #": "3", "Surname ": "Alviz", "Given Name ": "Dino" },
+  { "Guest #": "39", "Table #": "4", "Surname ": "Bada", "Given Name ": "Cynthia" },
+  { "Guest #": "40", "Table #": "4", "Surname ": "Perez", "Given Name ": "Alberta" },
+  { "Guest #": "41", "Table #": "4", "Surname ": "Siccion", "Given Name ": "Teresa" },
+  { "Guest #": "42", "Table #": "4", "Surname ": "Lacson", "Given Name ": "Quey" },
+  { "Guest #": "43", "Table #": "4", "Surname ": "Lacson", "Given Name ": "Jess" },
+  { "Guest #": "44", "Table #": "4", "Surname ": "Batac", "Given Name ": "Dan" },
+  { "Guest #": "45", "Table #": "4", "Surname ": "Batac", "Given Name ": "Dan" },
+  { "Guest #": "49", "Table #": "5", "Surname ": "Cortez", "Given Name ": "Jacqueline" },
+  { "Guest #": "50", "Table #": "5", "Surname ": "Alviz", "Given Name ": "Gian" },
+  { "Guest #": "51", "Table #": "5", "Surname ": "Alviz", "Given Name ": "Gian" },
+  { "Guest #": "52", "Table #": "5", "Surname ": "Cunanan", "Given Name ": "Errol" },
+  { "Guest #": "53", "Table #": "5", "Surname ": "Cunanan", "Given Name ": "Angelica" },
+  { "Guest #": "54", "Table #": "5", "Surname ": "Cunanan", "Given Name ": "Thomas" },
+  { "Guest #": "55", "Table #": "5", "Surname ": "Cunanan", "Given Name ": "Theo" },
+  { "Guest #": "56", "Table #": "5", "Surname ": "Tongol", "Given Name ": "Nikki" },
+  { "Guest #": "57", "Table #": "5", "Surname ": "Tongol", "Given Name ": "Carlo" },
+  { "Guest #": "58", "Table #": "5", "Surname ": "Tongol", "Given Name ": "Yonzo" },
+  { "Guest #": "59", "Table #": "6", "Surname ": "Cortez", "Given Name ": "Anthony" },
+  { "Guest #": "60", "Table #": "6", "Surname ": "Corte", "Given Name ": "Enzo" },
+  { "Guest #": "61", "Table #": "6", "Surname ": "Cortez", "Given Name ": "Jhovy" },
+  { "Guest #": "62", "Table #": "6", "Surname ": "Cortez", "Given Name ": "Lizette" },
+  { "Guest #": "63", "Table #": "6", "Surname ": "Cortez", "Given Name ": "Kingsley" },
+  { "Guest #": "64", "Table #": "6", "Surname ": "Cortez", "Given Name ": "Anne Lorraine" },
+  { "Guest #": "65", "Table #": "6", "Surname ": "Cortez", "Given Name ": "Quincey" },
+  { "Guest #": "66", "Table #": "6", "Surname ": "Cortez", "Given Name ": "Baby" },
+  { "Guest #": "67", "Table #": "6", "Surname ": "Cortez", "Given Name ": "Aaron" },
+  { "Guest #": "68", "Table #": "6", "Surname ": "Cortez", "Given Name ": "Aaron" },
+  { "Guest #": "69", "Table #": "7", "Surname ": "Cortez", "Given Name ": "Vince" },
+  { "Guest #": "70", "Table #": "7", "Surname ": "Cortez", "Given Name ": "Julienne" },
+  { "Guest #": "71", "Table #": "7", "Surname ": "Cortez", "Given Name ": "Julienne" },
+  { "Guest #": "72", "Table #": "7", "Surname ": "Cortez", "Given Name ": "Danielle" },
+  { "Guest #": "73", "Table #": "7", "Surname ": "Cortez", "Given Name ": "Danielle" },
+  { "Guest #": "79", "Table #": "8", "Surname ": "Maniulit", "Given Name ": "Michael" },
+  { "Guest #": "80", "Table #": "8", "Surname ": "Abrina", "Given Name ": "Danica" },
+  { "Guest #": "81", "Table #": "8", "Surname ": "Maniulit", "Given Name ": "Sabine" },
+  { "Guest #": "82", "Table #": "8", "Surname ": "Maniulit", "Given Name ": "Ysabel" },
+  { "Guest #": "83", "Table #": "8", "Surname ": "Bolisay", "Given Name ": "Carl" },
+  { "Guest #": "84", "Table #": "8", "Surname ": "Arboleda", "Given Name ": "Koji" },
+  { "Guest #": "85", "Table #": "8", "Surname ": "Paunlagui", "Given Name ": "Alyanna" },
+  { "Guest #": "86", "Table #": "8", "Surname ": "Paunlagui", "Given Name ": "Enzo" },
+  { "Guest #": "87", "Table #": "8", "Surname ": "Paunlagui", "Given Name ": "Nara Mija" },
+  { "Guest #": "88", "Table #": "8", "Surname ": "Roldan", "Given Name ": "Nimfa" },
+  { "Guest #": "89", "Table #": "8", "Surname ": "Roldan", "Given Name ": "Novel" },
+  { "Guest #": "90", "Table #": "9", "Surname ": "Maniulit", "Given Name ": "Marilen" },
+  { "Guest #": "91", "Table #": "9", "Surname ": "Maniulit", "Given Name ": "Katrina" },
+  { "Guest #": "92", "Table #": "9", "Surname ": "Maniulit", "Given Name ": "Paula" },
+  { "Guest #": "93", "Table #": "9", "Surname ": "Young-Ho", "Given Name ": "Bethany" },
+  { "Guest #": "94", "Table #": "9", "Surname ": "Ho", "Given Name ": "Kevin" },
+  { "Guest #": "95", "Table #": "9", "Surname ": "Young-Ho", "Given Name ": "Maya" },
+  { "Guest #": "96", "Table #": "9", "Surname ": "Young", "Given Name ": "Mariano Jr." },
+  { "Guest #": "97", "Table #": "9", "Surname ": "Young", "Given Name ": "Giovie" },
+  { "Guest #": "98", "Table #": "9", "Surname ": "Young", "Given Name ": "Timothy" },
+  { "Guest #": "99", "Table #": "9", "Surname ": "Young", "Given Name ": "Timothy" },
+  { "Guest #": "100", "Table #": "10", "Surname ": "Tan", "Given Name ": "Cecile" },
+  { "Guest #": "101", "Table #": "10", "Surname ": "Tan", "Given Name ": "Justin" },
+  { "Guest #": "102", "Table #": "10", "Surname ": "Tan", "Given Name ": "Jaden" },
+  { "Guest #": "103", "Table #": "10", "Surname ": "Tan", "Given Name ": "Melissa" },
+  { "Guest #": "104", "Table #": "10", "Surname ": "Gan", "Given Name ": "Arturo" },
+  { "Guest #": "105", "Table #": "10", "Surname ": "Gan", "Given Name ": "Chi Chi" },
+  { "Guest #": "106", "Table #": "10", "Surname ": "Gan", "Given Name ": "Kevin Denzel" },
+  { "Guest #": "107", "Table #": "10", "Surname ": "Gan", "Given Name ": "Sean Chester" },
+  { "Guest #": "108", "Table #": "10", "Surname ": "Soberano", "Given Name ": "Bienvenido" },
+  { "Guest #": "109", "Table #": "10", "Surname ": "Tan Sr.", "Given Name ": "Henry" },
+  { "Guest #": "110", "Table #": "11", "Surname ": "Bondoc", "Given Name ": "Bea" },
+  { "Guest #": "111", "Table #": "11", "Surname ": "Franco", "Given Name ": "Macky" },
+  { "Guest #": "112", "Table #": "11", "Surname ": "Manikad", "Given Name ": "Bea" },
+  { "Guest #": "113", "Table #": "11", "Surname ": "Concepcion", "Given Name ": "Martin" },
+  { "Guest #": "114", "Table #": "11", "Surname ": "Araullo-Concepcion", "Given Name ": "Roren" },
+  { "Guest #": "115", "Table #": "11", "Surname ": "Castolome", "Given Name ": "Lou Jesric" },
+  { "Guest #": "116", "Table #": "11", "Surname ": "Adriano", "Given Name ": "Leo" },
+  { "Guest #": "117", "Table #": "11", "Surname ": "Adriano", "Given Name ": "Patricia" },
+  { "Guest #": "118", "Table #": "11", "Surname ": "Sanchez", "Given Name ": "Roy Martin" },
+  { "Guest #": "119", "Table #": "11", "Surname ": "Sanchez", "Given Name ": "Janine" },
+  { "Guest #": "120", "Table #": "12", "Surname ": "Javier", "Given Name ": "Josh" },
+  { "Guest #": "121", "Table #": "12", "Surname ": "Lopez", "Given Name ": "Hanni" },
+  { "Guest #": "122", "Table #": "12", "Surname ": "Carido", "Given Name ": "Paolo" },
+  { "Guest #": "123", "Table #": "12", "Surname ": "Carido", "Given Name ": "Sarah" },
+  { "Guest #": "124", "Table #": "12", "Surname ": "Caalim", "Given Name ": "Jerson" },
+  { "Guest #": "125", "Table #": "12", "Surname ": "Clamar", "Given Name ": "Mary" },
+  { "Guest #": "126", "Table #": "12", "Surname ": "Galzote", "Given Name ": "Levi" },
+  { "Guest #": "127", "Table #": "12", "Surname ": "Galzote", "Given Name ": "Arbee Ann" },
+  { "Guest #": "128", "Table #": "12", "Surname ": "Galzote", "Given Name ": "Casey" },
+  { "Guest #": "129", "Table #": "12", "Surname ": "Ang", "Given Name ": "Kat" },
+  { "Guest #": "130", "Table #": "13", "Surname ": "Santiago", "Given Name ": "Ian" },
+  { "Guest #": "131", "Table #": "13", "Surname ": "Santiago", "Given Name ": "Ian" },
+  { "Guest #": "132", "Table #": "13", "Surname ": "Padilla", "Given Name ": "Dominic" },
+  { "Guest #": "133", "Table #": "13", "Surname ": "Padilla", "Given Name ": "Dominic" },
+  { "Guest #": "134", "Table #": "13", "Surname ": "Garcia", "Given Name ": "RJ" },
+  { "Guest #": "135", "Table #": "13", "Surname ": "Garcia", "Given Name ": "RJ" },
+  { "Guest #": "136", "Table #": "13", "Surname ": "Maclan", "Given Name ": "Rominic" },
+  { "Guest #": "137", "Table #": "13", "Surname ": "Maclan", "Given Name ": "Rominic" },
+  { "Guest #": "138", "Table #": "13", "Surname ": "Fullero", "Given Name ": "Micha" },
+  { "Guest #": "139", "Table #": "13", "Surname ": "Calimag", "Given Name ": "Katrina" },
+  { "Guest #": "140", "Table #": "14", "Surname ": "Vestil", "Given Name ": "Martin" },
+  { "Guest #": "141", "Table #": "14", "Surname ": "Vestil", "Given Name ": "Cecille" },
+  { "Guest #": "142", "Table #": "14", "Surname ": "Vestil", "Given Name ": "Amaria" },
+  { "Guest #": "143", "Table #": "14", "Surname ": "Vestil", "Given Name ": "Ava" },
+  { "Guest #": "144", "Table #": "14", "Surname ": "Lugue", "Given Name ": "Marty" },
+  { "Guest #": "145", "Table #": "14", "Surname ": "David", "Given Name ": "Perry" },
+  { "Guest #": "146", "Table #": "14", "Surname ": "Lim", "Given Name ": "Jandrei" },
+  { "Guest #": "147", "Table #": "14", "Surname ": "Sumastre", "Given Name ": "Khel" },
+  { "Guest #": "148", "Table #": "14", "Surname ": "Guevarra", "Given Name ": "Russell" },
+  { "Guest #": "149", "Table #": "14", "Surname ": "Cunanan", "Given Name ": "Shaun" },
+  { "Guest #": "150", "Table #": "15", "Surname ": "Lim", "Given Name ": "Wade" },
+  { "Guest #": "151", "Table #": "15", "Surname ": "Lim", "Given Name ": "Morganne" },
+  { "Guest #": "152", "Table #": "15", "Surname ": "De Leon", "Given Name ": "Andrew" },
+  { "Guest #": "153", "Table #": "15", "Surname ": "De Leon", "Given Name ": "Andrew" },
+  { "Guest #": "154", "Table #": "15", "Surname ": "De Leon", "Given Name ": "Andrew" },
+  { "Guest #": "155", "Table #": "15", "Surname ": "Maniulit", "Given Name ": "Virgilo" },
+  { "Guest #": "156", "Table #": "15", "Surname ": "Maniulit", "Given Name ": "Ofelia" },
+  { "Guest #": "160", "Table #": "16", "Surname ": "Ebe", "Given Name ": "Isaac" },
+  { "Guest #": "161", "Table #": "16", "Surname ": "Montalbo", "Given Name ": "Kiara" },
+  { "Guest #": "162", "Table #": "16", "Surname ": "Mangulabnan", "Given Name ": "Beth" },
+  { "Guest #": "163", "Table #": "16", "Surname ": "Mangulabnan", "Given Name ": "Beth" },
+  { "Guest #": "164", "Table #": "16", "Surname ": "Siy-hian", "Given Name ": "Mikhail" },
+  { "Guest #": "165", "Table #": "16", "Surname ": "Cayago", "Given Name ": "Michael" },
+  { "Guest #": "166", "Table #": "16", "Surname ": "Cayago", "Given Name ": "Ely" },
+  { "Guest #": "170", "Table #": "17", "Surname ": "Gonzales", "Given Name ": "Judith" },
+  { "Guest #": "171", "Table #": "17", "Surname ": "Tan", "Given Name ": "Mafe" },
+  { "Guest #": "172", "Table #": "17", "Surname ": "Paria", "Given Name ": "Sincere" },
+  { "Guest #": "173", "Table #": "17", "Surname ": "dela Cruz", "Given Name ": "Julie Anne" },
+  { "Guest #": "174", "Table #": "17", "Surname ": "Osoteo", "Given Name ": "Sandra" },
+  { "Guest #": "175", "Table #": "17", "Surname ": "Jose", "Given Name ": "Anna" },
+  { "Guest #": "176", "Table #": "17", "Surname ": "Pizaro", "Given Name ": "Amor" }
+    ];
+
+    function searchGuest() {
+        const input = document.getElementById('guestSearch').value.toLowerCase().trim();
+        const resultDiv = document.getElementById('result');
+        
+        if (input === "") {
+            resultDiv.innerHTML = "";
+            return;
+        }
+
+        // We filter the list to find any matches in Surname OR Given Name
+        const found = guests.find(g => {
+            const firstName = (g["Given Name "] || "").toLowerCase();
+            const lastName = (g["Surname "] || "").toLowerCase();
+            const fullName = firstName + " " + lastName;
+            
+            return firstName.includes(input) || lastName.includes(input) || fullName.includes(input);
+        });
+
+        if (found) {
+            resultDiv.innerHTML = `
+                <div>Welcome, <br><span class="highlight">${found["Given Name "]} ${found["Surname "]}</span></div>
+                <div style="margin-top:15px;">Your assigned table is:</div>
+                <div class="highlight">${found["Table #"]}</div>
+            `;
+        } else {
+            resultDiv.innerHTML = "<span style='color:red;'>Name not found. Please check the spelling.</span>";
+        }
+    }
+</script>
+
+</body>
+</html>
